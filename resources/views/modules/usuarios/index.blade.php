@@ -1,11 +1,103 @@
 @extends('layouts.main')
+
+@section('titulo', $titulo)
+@section('contenido')
 <main id="main" class="main">
-    <div class="pagetitle">
-      <h1>Usuarios</h1>
-    </div><!-- End Page Title -->
+  <div class="pagetitle">
+    <h1>Usuarios</h1>
+  </div>
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Administrar Usuarios</h5>
+            <p>
+              Administrar las cuentas y roles de usuarios.
+            </p>
 
-    <section class="section dashboard">
-      
-    </section>
+            <a href="{{ route('usuarios.create') }}" class="btn btn-primary mb-3">
+              <i class="fa-solid fa-user-plus"></i> Agregar nuevo Usuario
+            </a>
+            <hr>
+            <table class="table datatable">
+              <thead>
+                <tr>
+                  <th class="text-center">Email</th>
+                  <th class="text-center">Nombre</th>
+                  <th class="text-center">Rol</th>
+                  <th class="text-center">Cambio password</th>
+                  <th class="text-center">Activo</th>
+                  <th class="text-center">Editar</th>
+                </tr>
+              </thead>
+              <tbody id="tbody-usuarios">
+                @include('modules.usuarios.tbody')
+              </tbody>
+            </table>
+            </div>
+        </div>
 
-  </main>
+      </div>
+    </div>
+  </section>
+
+</main>
+@include('modules.usuarios.modal_cambiar_password')
+@endsection
+
+@push('scripts')
+       <script>
+          function recargar_tbody(){
+            $.ajax({
+              type: "GET",
+              url: "{{ route('usuarios.tbody') }}",
+              success: function(respuesta){
+                console.log(respuesta);
+              }
+            });
+          }
+
+          function cambiar_estado(id, estado){
+            $.ajax({
+              type: "GET",
+              url: "usuarios/cambiar-estado/" + id + "/" + estado,
+              success: function(respuesta){
+                if(respuesta == 1){
+                  alert("Estado cambiado correctamente");
+                  recargar_tbody();
+                }
+              }
+            });
+          }
+
+          function agregar_id_usuario(id){
+            $('#id_usuario').val(id);
+          }
+
+          function cambio_password(){
+            let id = $('#id_usuario').val();
+            let password = $('#password').val();
+
+            $.ajax({
+              type: "GET",
+              url: "usuarios/cambiar-password/" + id + "/" + password,
+              success:function(respuesta){
+                if(respuesta == 1){
+                  alert("Password cambiado correctamente");
+                  $('#frmPassword')[0].reset();
+                }
+              }
+            });
+            return false;
+          }
+
+          $(document).ready(function(){
+            $('.form-check-input').on("change", function(){
+              let id = $(this).attr("id");
+              let estado = $(this).is(':checked') ? 1 : 0;
+              cambiar_estado(id, estado);
+            });
+          });
+       </script>
+@endpush
