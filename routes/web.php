@@ -8,31 +8,40 @@ use App\Http\Controllers\DetalleVentas;
 use App\Http\Controllers\Productos;
 use App\Http\Controllers\Clientes;
 use App\Http\Controllers\Usuarios;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\Route;
 
+//se crea un usuario de prueba
+//Route::get('/crear-admin', [AuthController::class, 'crearAdmin']);
+
 Route::get('/', [AuthController::class, 'index'])->name('login');
-Route::get('/home', [Dashboard::class, 'index'])->name('home');
+Route::post('loguear', [AuthController::class, 'logear'])->name('logear');
+
+Route::middleware('auth')->group(function() {
+    Route::get('/home', [Dashboard::class, 'index'])->name('home');
+    Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
+});
 
 Route::prefix('ventas')->group(function() {
     Route::get('/nueva-venta', [Ventas::class, 'index'])->name('ventas-nueva');
 });
 
-Route::prefix('detalle')->group(function() {
+Route::prefix('detalle')->middleware('auth')->group(function() {
     Route::get('/detalle-venta', [DetalleVentas::class, 'index'])->name('detalle-venta');
 });
 
-Route::prefix('categorias')->group(function() {
+Route::prefix('categorias')->middleware('auth')->group(function() {
     Route::get('/', [Categorias::class, 'index'])->name('categorias');
 });
 
-Route::prefix('productos')->group(function() {
+Route::prefix('productos')->middleware('auth')->group(function() {
     Route::get('/', [Productos::class, 'index'])->name('productos');
 });
 
-Route::prefix('clientes')->group(function() {
+Route::prefix('clientes')->middleware('auth')->group(function() {
     Route::get('/', [Clientes::class, 'index'])->name('clientes');
 });
 
-Route::prefix('usuarios')->group(function() {
+Route::prefix('usuarios')->middleware('auth')->group(function() {
     Route::get('/', [Usuarios::class, 'index'])->name('usuarios');
 });
