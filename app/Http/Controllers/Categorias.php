@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Categoria;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use PhpParser\Node\Stmt\TryCatch;
 
 class Categorias extends Controller
 {
@@ -32,11 +33,17 @@ class Categorias extends Controller
      */
     public function store(Request $request)
     {
-        $item = new Categoria();
-        $item->user_id = Auth::user()->id;
-        $item->nombre = $request->nombre;
-        $item->save();
-        return redirect()->route('categorias');
+        try{
+            $item = new Categoria();
+            $item->user_id = Auth::user()->id;
+            $item->nombre = $request->nombre;
+            $item->save();
+            return redirect()->route('categorias')->with('success', 'Categoría creada exitosamente');
+        }catch(\Exception $e){
+            // Manejar la excepción, por ejemplo, registrar el error o mostrar un mensaje
+            return redirect()->route('categorias')->with('error', 'Error al crear la categoría' . $e->getMessage()); 
+        }
+        
     }
 
     /**
@@ -64,10 +71,14 @@ class Categorias extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $item = Categoria::find($id);
-        $item->nombre = $request->nombre;
-        $item->save();
-        return redirect()->route('categorias');
+        try{
+            $item = Categoria::find($id);
+            $item->nombre = $request->nombre;
+            $item->save();
+            return redirect()->route('categorias')->with('success', 'Categoría actualizada exitosamente');
+        }catch(\Exception $e){
+            return redirect()->route('categorias')->with('error', 'Error al actualizar la categoría' . $e->getMessage()); 
+        }
     }
 
     /**
@@ -75,8 +86,12 @@ class Categorias extends Controller
      */
     public function destroy(string $id)
     {
-        $item = Categoria::find($id);
-        $item->delete();
-        return redirect()->route('categorias');
+        try{
+            $item = Categoria::find($id);
+            $item->delete();
+            return redirect()->route('categorias')->with('success', 'Categoría eliminada exitosamente');
+        }catch(\Exception $e){
+            return redirect()->route('categorias')->with('error', 'Error al eliminar la categoría' . $e->getMessage()); 
+        }
     }
 }
