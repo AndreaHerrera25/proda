@@ -64,8 +64,20 @@
               url: "usuarios/cambiar-estado/" + id + "/" + estado,
               success: function(respuesta){
                 if(respuesta == 1){
-                  alert("Estado cambiado correctamente");
+                  Swal.fire({
+                  icon: 'success',
+                  title: 'Éxito',
+                  text: 'Cambio de estado exitoso',
+                  confirmButtonText: 'Aceptar'
+                });
                   recargar_tbody();
+                } else {
+                  Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'No se pudo cambiar el estado',
+                  confirmButtonText: 'Aceptar'
+                });
                 }
               }
             });
@@ -84,8 +96,20 @@
               url: "usuarios/cambiar-password/" + id + "/" + password,
               success:function(respuesta){
                 if(respuesta == 1){
-                  alert("Password cambiado correctamente");
+                  Swal.fire({
+                  icon: 'success',
+                  title: 'Éxito',
+                  text: 'Password cambiado correctamente',
+                  confirmButtonText: 'Aceptar'
+                });
                   $('#frmPassword')[0].reset();
+                }else{
+                  Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: 'No se pudo cambiar el password',
+                  confirmButtonText: 'Aceptar'
+                });
                 }
               }
             });
