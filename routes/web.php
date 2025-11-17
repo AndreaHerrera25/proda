@@ -32,6 +32,12 @@ Route::prefix('detalle')->middleware('auth')->group(function() {
 
 Route::prefix('categorias')->middleware('auth')->group(function() {
     Route::get('/', [Categorias::class, 'index'])->name('categorias');
+    Route::get('/create', [Categorias::class, 'create'])->name('categorias.create');
+    Route::post('/store', [Categorias::class, 'store'])->name('categorias.store');
+    Route::get('/show/{id}', [Categorias::class, 'show'])->name('categorias.show');
+    Route::delete('/destroy/{id}', [Categorias::class, 'destroy'])->name('categorias.destroy');
+    Route::get('/edit/{id}', [Categorias::class, 'edit'])->name('categorias.edit');
+    Route::put('/update/{id}', [Categorias::class, 'update'])->name('categorias.update');
 });
 
 Route::prefix('productos')->middleware('auth')->group(function() {
