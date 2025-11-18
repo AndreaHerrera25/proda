@@ -51,7 +51,9 @@ class Proveedores extends Controller
      */
     public function show(string $id)
     {
-        //
+        $titulo = "Eliminar Proveedor";
+        $item = Proveedor::find($id);
+        return view('modules.proveedores.show', compact('item', 'titulo'));
     }
 
     /**
@@ -59,7 +61,9 @@ class Proveedores extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $item = Proveedor::find($id);
+        $titulo = 'Editar Proveedor';
+        return view('modules.proveedores.edit', compact('item', 'titulo'));
     }
 
     /**
@@ -67,7 +71,19 @@ class Proveedores extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try{
+            $item = Proveedor::find($id);
+            $item->nombre = $request->nombre;
+            $item->telefono = $request->telefono;
+            $item->email = $request->email;
+            $item->cp = $request->cp;
+            $item->sitio_web = $request->sitio_web;
+            $item->notas = $request->notas;
+            $item->save();
+            return to_route('proveedores')->with('success', 'Proveedor actualizado correctamente.');
+        }catch(\Exception $th){
+            return to_route('proveedores')->with('error', 'Error al actualizar el proveedor: ' . $th->getMessage());
+        }
     }
 
     /**
@@ -75,6 +91,12 @@ class Proveedores extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        try{
+            $item = Proveedor::find($id);
+            $item->delete();
+            return to_route('proveedores')->with('success', 'Proveedor eliminado correctamente.');
+        }catch(\Exception $th){
+            return to_route('proveedores')->with('error', 'Error al eliminar el proveedor: ' . $th->getMessage());
+        }
     }
 }
