@@ -3,6 +3,10 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Categoria;
+use App\Models\Proveedor;
+use App\Models\Producto;
+use Illuminate\Support\Facades\Auth;
 
 class Productos extends Controller
 {
@@ -11,7 +15,16 @@ class Productos extends Controller
      */
     public function index()
     {
-        return view('modules.productos.index');
+        $titulo = "Productos";
+        $items = Producto::select(
+            'productos.*',
+            'categorias.nombre as nombre_categoria',
+            'proveedores.nombre as nombre_proveedor'
+        )
+        ->join('categorias', 'productos.categoria_id', '=', 'categorias.id')
+        ->join('proveedores', 'productos.proveedor_id', '=', 'proveedores.id')
+        ->get();
+        return view('modules.productos.index', compact('titulo', 'items'));
     }
 
     /**
@@ -19,7 +32,10 @@ class Productos extends Controller
      */
     public function create()
     {
-        //
+        $titulo = "Crear producto";
+        $categorias = Categoria::all();
+        $proveedores = Proveedor::all();
+        return view('modules.productos.create', compact('titulo', 'categorias', 'proveedores'));
     }
 
     /**
@@ -27,7 +43,18 @@ class Productos extends Controller
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $item = new producto();
+            $item->user_id = Auth::user()->id;
+            $item->categoria_id = $request->categoria_id;
+            $item->proveedor_id = $request->proveedor_id;
+            $item->nombre = $request->nombre;
+            $item->descripcion = $request->descripcion;
+            $item->save();
+            return to_route('productos')->with('success', 'Producto creado exitosamente.');
+        } catch (\Throwable $th) {
+            return to_route('productos')->with('error', 'Fallo al crear producto.' . $th->getMessage());
+        }
     }
 
     /**
