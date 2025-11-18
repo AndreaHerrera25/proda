@@ -42,7 +42,7 @@ class Usuarios extends Controller
         ]);
         return to_route('usuarios')->with('success', 'Usuario creado exitosamente.');
         } catch (\Exception $e) {
-            return to_route('usuarios')->with(['error', 'Error al crear el usuario: ' . $e->getMessage()]);
+            return to_route('usuarios')->with('error', 'Error al crear el usuario: ' . $e->getMessage());
         }
     }
 
@@ -77,7 +77,7 @@ class Usuarios extends Controller
             $item->save();
             return to_route('usuarios')->with('success', 'Usuario actualizado exitosamente.');
         }catch(\Exception $e){
-            return to_route('usuarios')->with(['error', 'Error al actualizar el usuario: ' . $e->getMessage()]);
+            return to_route('usuarios')->with('error', 'Error al actualizar el usuario: ' . $e->getMessage());
         }
     }
 
