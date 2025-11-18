@@ -16,7 +16,7 @@
               Administrar los proveedores de nuestros productos
             </p>
 
-            <a href="#" class="btn btn-primary mb-3">
+            <a href="{{ route('proveedores.create') }}" class="btn btn-primary mb-3">
               <i class="fa-solid fa-circle-plus"></i> Agregar Proveedor
             </a>
             <hr>
