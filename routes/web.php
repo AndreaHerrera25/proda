@@ -6,6 +6,7 @@ use App\Http\Controllers\Dashboard;
 use App\Http\Controllers\Ventas;
 use App\Http\Controllers\DetalleVentas;
 use App\Http\Controllers\Productos;
+use App\Http\Controllers\Compras;
 use App\Http\Controllers\Clientes; 
 use App\Http\Controllers\Proveedores;
 use App\Http\Controllers\Reportes_productos;
@@ -77,4 +78,10 @@ Route::prefix('usuarios')->middleware('auth')->group(function() {
     Route::get('/tbody', [Usuarios::class, 'tbody'])->name('usuarios.tbody');
     Route::get('/cambiar-estado/{id}/{estado}', [Usuarios::class, 'estado'])->name('usuarios.estado');
     Route::get('/cambiar-password/{id}/{password}', [Usuarios::class, 'cambio_password'])->name('usuarios.password');
+});
+
+Route::prefix('compras')->middleware('auth')->group(function() {
+    Route::get('/', [Compras::class, 'index'])->name('compras');
+    Route::get('/create/{id_producto}', [Compras::class, 'create'])->name('compras.create');
+    Route::post('/store', [Compras::class, 'store'])->name('compras.store');
 });
