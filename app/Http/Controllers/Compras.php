@@ -72,7 +72,17 @@ class Compras extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $titulo = 'Editar compra';
+        $item = Compra::select(
+            'compras.*',
+            'users.name as nombre_usuario',
+            'productos.nombre as nombre_producto'
+        )
+        ->join('users', 'compras.user_id', '=', 'users.id')
+        ->join('productos', 'compras.producto_id', '=', 'productos.id')
+        ->where('compras.id', $id)
+        ->first();
+        return view('modules.compras.edit', compact('titulo', 'item'));
     }
 
     /**
@@ -80,7 +90,27 @@ class Compras extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        /*
+        Si ya hicimos una venta con este producto, no seria buena idea actualizarlo
+        */
+        try {
+            $cantidad_anterior = 0;
+            $item = Compra::find($id);
+            $cantidad_anterior = $item->cantidad;
+            $item->cantidad = $request->cantidad;
+            $item->precio_compra = $request->precio_compra;
+
+            if($item->save()){
+                $item = Producto::find($request->producto_id);
+
+                $cantidad_anterior = $item->cantidad - $cantidad_anterior;
+                $item->cantidad = $cantidad_anterior + $request->cantidad;
+                $item->save();
+                return redirect()->route('compras')->with('success', 'Compra actualizada con exito');
+            } 
+        }catch (\Throwable $th) {
+            return redirect()->route('compras')->with('error', 'No pudo actualizar la comprar' . $th->getMessage());
+        }
     }
 
     /**

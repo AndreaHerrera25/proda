@@ -40,7 +40,7 @@
                     <td> ${{ $item->precio_compra * $item->cantidad }}</td>
                     <td> {{ $item->created_at}} </td>
                     <td>
-                      <a href="#" class="btn btn-warning">
+                      <a href=" {{ route('compras.edit', $item->id) }}" class="btn btn-warning">
                         <i class="fa-solid fa-pen-to-square"></i>
                       </a>
                       <a href=" # " class="btn btn-danger">
