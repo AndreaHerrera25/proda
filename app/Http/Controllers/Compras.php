@@ -64,7 +64,17 @@ class Compras extends Controller
      */
     public function show(string $id)
     {
-        //
+        $titulo = 'compras';
+        $items = Compra::select(
+            'compras.*',
+            'users.name as nombre_usuario',
+            'productos.nombre as nombre_producto'
+        )
+        ->join('users', 'compras.user_id', '=', 'users.id')
+        ->join('productos', 'compras.producto_id', '=', 'productos.id')
+        ->where('compras.id', $id)
+        ->first();
+        return view('modules.compras.show', compact('titulo', 'items'));
     }
 
     /**
@@ -116,8 +126,21 @@ class Compras extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(string $id, Request $request)
     {
-        //
+        try {
+            $item = Compra::find($id);
+            $cantidad_compra = $item->cantidad;
+            if($item->delete()) {
+                $item = Producto::find($request->producto_id);
+                $item->cantidad = $item->cantidad - $cantidad_compra;
+                $item->save();
+                return redirect()->route('compras')->with('success', 'Compra eliminada con exito');
+            } else {
+                return redirect()->route('compras')->with('error', 'Compra no eliminada');
+            }
+        } catch (\Throwable $th) {
+            return redirect()->route('compras')->with('error', 'No se pudo eliminar la compra' . $th->getMessage());
+        }
     }
 }
