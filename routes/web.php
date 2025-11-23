@@ -7,12 +7,12 @@ use App\Http\Controllers\Ventas;
 use App\Http\Controllers\DetalleVentas;
 use App\Http\Controllers\Productos;
 use App\Http\Controllers\Compras;
-use App\Http\Controllers\Clientes; 
 use App\Http\Controllers\Proveedores;
 use App\Http\Controllers\Reportes_productos;
 use App\Http\Controllers\Usuarios;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Artisan;
 
 //se crea un usuario de prueba
 //Route::get('/crear-admin', [AuthController::class, 'crearAdmin']);
