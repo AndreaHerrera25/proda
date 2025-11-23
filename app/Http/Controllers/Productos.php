@@ -45,23 +45,34 @@ class Productos extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // En app/Http/Controllers/Productos.php
+
     public function store(Request $request)
     {
         try {
-            $item = new producto();
+            $item = new Producto(); // Corregido: usa mayúscula inicial Producto() si tu modelo es así
             $item->user_id = Auth::user()->id;
             $item->categoria_id = $request->categoria_id;
             $item->proveedor_id = $request->proveedor_id;
+            $item->codigo = $request->codigo;
             $item->nombre = $request->nombre;
             $item->descripcion = $request->descripcion;
             $item->save();
             $id_producto = $item->id;
 
             if ($id_producto > 0) {
-                if ($this->subir_imagen($request, $id_producto)) {
-                    return to_route('productos')->with('success', 'Producto creado exitosamente.');
+                
+                // 🛑 CORRECCIÓN CLAVE: Verificar si existe el archivo antes de llamar a subir_imagen
+                if ($request->hasFile('imagen')) { 
+                    if ($this->subir_imagen($request, $id_producto)) {
+                        return to_route('productos')->with('success', 'Producto creado y imagen subida exitosamente.');
+                    } else {
+                        // Si falla el save() del modelo Imagen, no la subida
+                        return to_route('productos')->with('error', 'Producto creado, pero falló al guardar la referencia de la imagen.');
+                    }
                 } else {
-                    return to_route('productos')->with('error', 'No se subio la imagen.');
+                    // Si no hay archivo, simplemente continúa y retorna éxito de producto
+                    return to_route('productos')->with('success', 'Producto creado exitosamente (sin imagen).');
                 }
             }
         } catch (\Throwable $th) {
@@ -70,6 +81,12 @@ class Productos extends Controller
     }
 
     public function subir_imagen($request, $id_producto){
+        // Verificar si el archivo 'imagen' existe. Si no, retornamos falso.
+        if (!$request->hasFile('imagen')) {
+            return false; 
+        }
+        
+        // Si existe, procede la subida.
         $rutaImagen = $request->file('imagen')->store('imagenes', 'public');
         $nombreImagen = basename($rutaImagen);
 
@@ -77,8 +94,9 @@ class Productos extends Controller
         $item->producto_id = $id_producto;
         $item->nombre = $nombreImagen;
         $item->ruta = $rutaImagen;
+        
         return $item->save();
-    }   
+    } 
 
     /**
      * Display the specified resource.
@@ -119,6 +137,7 @@ class Productos extends Controller
             $item = Producto::find($id);
             $item->categoria_id = $request->categoria_id;
             $item->proveedor_id = $request->proveedor_id;
+            $item->codigo = $request->codigo;
             $item->nombre = $request->nombre;
             $item->descripcion = $request->descripcion;
             $item->precio_venta = $request->precio_venta;

@@ -24,6 +24,7 @@
                 <tr>
                   <th class="text-center">Categoria</th>
                   <th class="text-center">Proveedor</th>
+                  <th class="text-center">Codigo</th>
                   <th class="text-center">Nombre</th>
                   <th class="text-center">Imagen</th>
                   <th class="text-center">Descripcion</th>
@@ -39,21 +40,22 @@
               </thead>
               <tbody>
                 @foreach ($items as $item)
-                <tr class="text-center">
+                <tr class="text-start">
                     <td> {{ $item->nombre_categoria }} </td>
                     <td> {{ $item->nombre_proveedor }} </td>
+                    <td class="text-center"> {{ $item->codigo }} </td>
                     <td> {{ $item->nombre }} </td>
                     <td>  
                       @if ($item->imagen_producto)
                           <img src="{{ asset('storage/' . $item->imagen_producto)}}" alt="Imagen del Producto" width="50px" height="50px">
                       @else
-                          <span>[Sin Imagen]</span> 
+                          <span></span> 
                       @endif
                     </td>
                     <td> {{ $item->descripcion }} </td>
-                    <td> {{ $item->cantidad }} </td>
-                    <td> ${{ $item->precio_venta }} </td>
-                    <td> ${{ $item->precio_compra }} </td>
+                    <td class="text-center"> {{ $item->cantidad }} </td>
+                    <td class="text-center"> ${{ $item->precio_venta }} </td>
+                    <td class="text-center"> ${{ $item->precio_compra }} </td>
                     <td> 
                       <div class="form-check form-switch">
                           <input class="form-check-input" type="checkbox" id="{{ $item->id }}" 
