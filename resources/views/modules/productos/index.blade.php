@@ -15,8 +15,6 @@
             <p>
               Administra el stock del sistema.
             </p>
-            
-            
             <a href="{{ route('productos.create') }}" class="btn btn-primary mb-3">
               <i class="fa-solid fa-circle-plus"></i> Crear Producto
             </a>

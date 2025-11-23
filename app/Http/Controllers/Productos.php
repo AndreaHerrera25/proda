@@ -20,12 +20,13 @@ class Productos extends Controller
         $items = Producto::select(
             'productos.*',
             'categorias.nombre as nombre_categoria',
-            'proveedores.nombre as nombre_proveedor'
-            //'imagenes.ruta as imagen_producto'
+            'proveedores.nombre as nombre_proveedor',
+            'imagenes.ruta as imagen_producto',
+            'imagenes.id as imagen_id'
         )
         ->join('categorias', 'productos.categoria_id', '=', 'categorias.id')
         ->join('proveedores', 'productos.proveedor_id', '=', 'proveedores.id')
-        //->join('imagenes', 'productos.id', '=', 'imagenes.producto_id')
+        ->leftJoin('imagenes', 'productos.id', '=', 'imagenes.producto_id')
         ->get();
         return view('modules.productos.index', compact('titulo', 'items'));
     }
