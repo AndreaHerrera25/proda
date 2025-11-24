@@ -1,11 +1,50 @@
 @extends('layouts.main')
+
+@section('titulo', $titulo)
+@section('contenido')
 <main id="main" class="main">
-    <div class="pagetitle">
-      <h1>Detalles de venta</h1>
-    </div><!-- End Page Title -->
+  <div class="pagetitle">
+    <h1>Consulta de ventas hechas</h1>
+  </div>
+  <section class="section">
+    <div class="row">
+      <div class="col-lg-12">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">Revisar Ventas Existentes</h5>
+ 
+            <table class="table datatable">
+              <thead>
+                <tr>
+                  <th class="text-center">Total Vendido</th>
+                  <td class="text-center">Fecha venta</td>
+                  <th class="text-center">Usuario</th>
+                  <th class="text-center">ver Detalle</th>
+                  <th class="text-center">Cancelar venta</th>
+                </tr>
+              </thead>
+              <tbody>
+                @foreach ($items as $item)
+                  <tr>
+                    <td class="text-center">${{ $item->total_venta }}</td>
+                    <td class="text-center">{{ $item->created_at }}</td>
+                    <td class="text-center">{{ $item->nombre_usuario }}</td>
+                    <td class="text-center">
+                      <a href="{{ route('detalle.vista.detalle', $item->id)}}" class="btn btn-info">Detalle</a>
+                    </td>
+                    <td class="text-center">
+                      <a href="#" class="btn btn-danger">Cancelar Venta</a>
+                    </td>
+                  </tr>
+                @endforeach  
+              </tbody>
+            </table>
+            </div>
+        </div>
 
-    <section class="section dashboard">
-      
-    </section>
+      </div>
+    </div>
+  </section>
 
-  </main>
+</main>
+@endsection
