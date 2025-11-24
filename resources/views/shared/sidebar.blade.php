@@ -9,6 +9,7 @@
         </a>
       </li><!-- End Dashboard Nav -->
 
+      @can('ver-ventas')
       <li class="nav-item">
         <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
           <i class="bi bi-cart-check-fill"></i></i><span>Ventas</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -26,7 +27,9 @@
           </li>
         </ul>
       </li><!-- End Components Nav -->
+      @endcan
 
+      @can('ver-admin')
       <li class="nav-heading">Gestión</li>
 
       <li class="nav-item">
@@ -56,14 +59,14 @@
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="{{ route('compras')}}">
-          <i class="bi bi-file-person"></i>
+          <i class="fa-solid fa-shop"></i>
           <span>Compras</span>
         </a>
       </li><!-- End Error 404 Page Nav -->
 
       <li class="nav-item">
         <a class="nav-link collapsed" href="{{ route("proveedores") }}">
-          <i class="bi bi-file-person"></i>
+          <i class="fa-solid fa-people-carry-box"></i>
           <span>Proveedores</span>
         </a>
       </li><!-- End Error 404 Page Nav -->
@@ -74,7 +77,7 @@
           <span>Usuarios</span>
         </a>
       </li><!-- End Blank Page Nav -->
-
+      @endcan
     </ul>
-
+        
   </aside>
