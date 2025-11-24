@@ -20,6 +20,7 @@
                   <td class="text-center">Fecha venta</td>
                   <th class="text-center">Usuario</th>
                   <th class="text-center">ver Detalle</th>
+                  <th class="text-center">Imprimir Ticket</th>
                   <th class="text-center">Cancelar venta</th>
                 </tr>
               </thead>
@@ -32,8 +33,15 @@
                     <td class="text-center">
                       <a href="{{ route('detalle.vista.detalle', $item->id)}}" class="btn btn-info">Detalle</a>
                     </td>
+                    <td>
+                      <a target="_blank" href="{{ route('detalle.ticket', $item->id) }}" class="btn btn-success">Imprimir</a>
+                    </td>
                     <td class="text-center">
-                      <a href="#" class="btn btn-danger">Cancelar Venta</a>
+                      <form action=" {{ route('detalle.cancelar', $item->id )}}" method="POST" onsubmit=" return confirm('¿Estas seguro de cancelar la venta?')">
+                        @csrf
+                        @method('DELETE')
+                        <button class="btn btn-danger">Cancelar</button>
+                      </form>
                     </td>
                   </tr>
                 @endforeach  

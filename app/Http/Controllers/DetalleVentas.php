@@ -3,8 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Detalle_venta;
+use App\Models\Producto;
 use Illuminate\Http\Request;
 use App\Models\Venta;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\DB;
 
 class DetalleVentas extends Controller
 {
@@ -44,5 +47,55 @@ class DetalleVentas extends Controller
         ->get();
 
         return view('modules.detalles_ventas.detalle_venta', compact('titulo', 'venta', 'detalles'));
+    }
+
+    public function cancelar($id){
+        DB::beginTransaction();
+        try {
+            $detalles = Detalle_venta::select(
+                'producto_id', 'cantidad'
+            )
+            ->where('venta_id', $id)
+            ->get();
+
+            //devolver stock
+            foreach($detalles as $detalle){
+                Producto::where('id',$detalle->producto_id)
+                ->increment('cantidad', $detalle->cantidad);
+            }
+
+            //eliminar productos vendidos y la venta
+            Detalle_venta::where('venta_id', $id)->delete();
+            Venta::where('id', $id)->delete();
+
+            DB::commit();
+            return to_route('detalle-venta')->with('success', 'Cancelación de venta exitosa.' );
+        } catch (\Throwable $th) {
+            DB::rollback();
+            return to_route('detalle-venta')->with('error', 'No se pudo cancelar la venta.' );
+        }
+    }
+
+    public function generarTicket($id){
+        $venta = Venta::select(
+            'ventas.*',
+            'users.name as nombre_usuario'
+        )
+        ->join('users', 'ventas.user_id', '=', 'users.id')
+        ->where('ventas.id', $id)
+        ->firstOrFail();
+
+        $detalles = Detalle_venta::select(
+            'detalle_venta.*',
+            'productos.nombre as nombre_producto'
+        )
+        ->join('productos', 'detalle_venta.producto_id', '=', 'productos.id')
+        ->where('venta_id', $id)
+        ->get();
+
+        //generar el pdf
+        $pdf = Pdf::loadView("modules.detalles_ventas.ticket", compact('venta', 'detalles'));
+        //descargar el pdf
+        return $pdf->stream("ticket_compra_{$venta->id}.pdf");
     }
 }
